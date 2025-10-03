@@ -3,15 +3,19 @@ from app.core.config import get_settings
 from typing import Tuple, List, Dict
 import json
 
-settings = get_settings()
-genai.configure(api_key=settings.gemini_api_key)
-
 
 class ResumeAnalyzer:
     """Service for analyzing resumes using Gemini 2.5 Flash."""
     
     def __init__(self):
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self._model = None
+    
+    def _get_model(self):
+        if self._model is None:
+            settings = get_settings()
+            genai.configure(api_key=settings.gemini_api_key)
+            self._model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        return self._model
     
     def analyze_resume(self, resume_text: str) -> Tuple[str, str]:
         """
@@ -38,7 +42,8 @@ class ResumeAnalyzer:
         }}
         """
         
-        response = self.model.generate_content(prompt)
+        model = self._get_model()
+        response = model.generate_content(prompt)
         result = json.loads(response.text)
         
         return result["summary"], result["suggested_role"]
@@ -48,7 +53,14 @@ class QuestionGenerator:
     """Service for generating MCQ questions using Gemini 2.5 Pro."""
     
     def __init__(self):
-        self.model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
+        self._model = None
+    
+    def _get_model(self):
+        if self._model is None:
+            settings = get_settings()
+            genai.configure(api_key=settings.gemini_api_key)
+            self._model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
+        return self._model
     
     def generate_questions(
         self, 
@@ -101,7 +113,8 @@ class QuestionGenerator:
         ]
         """
         
-        response = self.model.generate_content(prompt)
+        model = self._get_model()
+        response = model.generate_content(prompt)
         # Extract JSON from response, handling potential markdown formatting
         text = response.text.strip()
         if text.startswith("```json"):

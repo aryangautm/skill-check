@@ -1,10 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import resume_router
-from app.core.database import engine, Base
-
-# Create database tables
-Base.metadata.create_all(bind=engine)
+from app.core.database import Base, get_engine
 
 app = FastAPI(
     title="Skill Check API",
@@ -23,6 +20,13 @@ app.add_middleware(
 
 # Include routers
 app.include_router(resume_router, prefix="/api", tags=["Resume & Questions"])
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Create database tables on startup."""
+    engine = get_engine()
+    Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
