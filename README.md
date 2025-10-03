@@ -2,6 +2,13 @@
 
 A FastAPI-based backend application that analyzes resumes using AI and generates personalized MCQ quizzes based on user experience and selected roles.
 
+## 🚀 Quick Start
+
+**New to the project?** Start here:
+- [Quick Start Guide](QUICKSTART.md) - Get running in 5 minutes with Docker
+- [API Usage Examples](API_USAGE.md) - Learn how to use the API
+- [Deployment Guide](DEPLOYMENT.md) - Deploy to production
+
 ## Features
 
 - 📄 **Resume Upload & Analysis**: Upload PDF, DOC, DOCX, or TXT files
